@@ -1,18 +1,16 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(an_mav_tools)
-
+set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
-  image_transport
-  mavros
-  mavros_msgs
-  message_runtime
-  roscpp
-  std_msgs
-  std_srvs
+   roscpp
+   tf
+   std_msgs
+   sensor_msgs
+   mavros_msgs
+   control_toolbox
 )
 
 ## System dependencies are found with CMake's conventions
@@ -71,9 +69,10 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
-#   DEPENDENCIES
-#   mavros_msgs#   std_msgs
-# )
+#    DEPENDENCIES
+#     std_msgs  # Or other packages containing msgs
+#     mavros_msgs
+#  )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -105,9 +104,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-   INCLUDE_DIRS include
-#  LIBRARIES an_mav_tools
-#  CATKIN_DEPENDS geometry_msgs image_transport mavros mavros_msgs message_runtime roscpp std_msgs std_srvs
+    INCLUDE_DIRS include
+    LIBRARIES an_mav_tools
+    CATKIN_DEPENDS roscpp std_msgs std_srvs mavros mavros_msgs control_toolbox
 #  DEPENDS system_lib
 )
 
@@ -117,15 +116,15 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
+include_directories( include ${catkin_INCLUDE_DIRS} )
 
 ## Declare a C++ library
-# add_library(an_mav_tools
-#   src/${PROJECT_NAME}/an_mav_tools.cpp
-# )
+FILE(GLOB_RECURSE an_mav_tools_headers "include/${PROJECT_NAME}/*.h")
+add_library( an_mav_tools
+    src/${PROJECT_NAME}/SetpointManager.cpp
+    src/${PROJECT_NAME}/SetpointManagerVelocity.cpp
+    ${an_mav_tools_headers}
+)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -133,9 +132,16 @@ include_directories(
 # add_dependencies(an_mav_tools ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(an_mav_tools_node src/an_mav_tools_node.cpp)
-add_executable( offb_control
-  src/offb_control/offb_node.cpp
+add_executable(	offb_node
+    src/offb_control/offb_node.cpp
+)
+
+add_executable( obstacle_avoid_node
+    src/obstacle_avoid/obstacle_avoid_node.cpp
+)
+
+add_executable( posetwist2odom_node
+    src/posetwist2odom/posetwist2odom_node.cpp
 )
 
 ## Add cmake target dependencies of the executable
@@ -146,8 +152,22 @@ add_executable( offb_control
 # target_link_libraries(an_mav_tools_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries( an_mav_tools
+    ${catkin_LIBRARIES}
+)
 
-target_link_libraries( offb_control ${catkin_LIBRARIES} )
+target_link_libraries( offb_node
+    ${catkin_LIBRARIES}
+)
+
+target_link_libraries( obstacle_avoid_node
+    ${catkin_LIBRARIES}
+    an_mav_tools
+)
+
+target_link_libraries( posetwist2odom_node
+    ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

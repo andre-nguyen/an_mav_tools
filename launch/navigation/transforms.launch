@@ -1,0 +1,9 @@
+<launch>
+  <!-- Laser is close to FCU -->
+  <node pkg="tf" type="static_transform_publisher" name="laser2fcu_tf"
+    args="0.01 0 0.0175 0 0 0 fcu laser 100" />
+
+  <!-- FCU is at local_position in local_origin -->
+  <!-- broadcasted by mavros -->
+
+</launch>
