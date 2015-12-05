@@ -140,10 +140,6 @@ add_executable( obstacle_avoid_node
     src/obstacle_avoid/obstacle_avoid_node.cpp
 )
 
-add_executable( posetwist2odom_node
-    src/posetwist2odom/posetwist2odom_node.cpp
-)
-
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(an_mav_tools_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
@@ -163,10 +159,6 @@ target_link_libraries( offb_node
 target_link_libraries( obstacle_avoid_node
     ${catkin_LIBRARIES}
     an_mav_tools
-)
-
-target_link_libraries( posetwist2odom_node
-    ${catkin_LIBRARIES}
 )
 
 #############
