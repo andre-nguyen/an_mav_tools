@@ -2,12 +2,14 @@
 
   <!--- Run AMCL -->
   <!-- <include file="$(find amcl)/examples/amcl_omni.launch" /> -->
-
+  <include file="$(find an_mav_tools)/launch/navigation/transforms.launch" />
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <rosparam file="$(find an_mav_tools)/launch/navigation/costmap_common.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find an_mav_tools)/launch/navigation/costmap_common.yaml" command="load" ns="local_costmap" />
     <rosparam file="$(find an_mav_tools)/launch/navigation/local_costmap.yaml" command="load" />
     <rosparam file="$(find an_mav_tools)/launch/navigation/global_costmap.yaml" command="load" />
     <rosparam file="$(find an_mav_tools)/launch/navigation/base_local_planner.yaml" command="load" />
+
+    <remap from="odom" to="/mavros/local_position/odometry" />
   </node>
 </launch>
