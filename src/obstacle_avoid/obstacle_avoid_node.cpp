@@ -6,6 +6,7 @@
 
 #include <ros/ros.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/Twist.h>
 #include <mavros_msgs/SetMode.h>
 #include <mavros_msgs/CommandBool.h>
 #include <control_toolbox/pid.h>
@@ -14,9 +15,14 @@
 #include "an_mav_tools/SetpointManagerVelocity.h"
 
 geometry_msgs::PoseStamped local_pos;
+geometry_msgs::Twist cmd_vel;
 
 void local_pos_cb(const geometry_msgs::PoseStamped::ConstPtr& msg){
     local_pos = *msg;
+}
+
+void cmd_vel_cb(const geometry_msgs::Twist::ConstPtr& msg){
+    cmd_vel = *msg;
 }
 
 int main(int argc, char **argv)
@@ -26,6 +32,8 @@ int main(int argc, char **argv)
 
     ros::Subscriber local_pos_sub = nh.subscribe<geometry_msgs::PoseStamped>
             ("/mavros/local_position/pose", 10, &local_pos_cb);
+    ros::Subscriber cmd_vel_sub = nh.subscribe<geometry_msgs::Twist>
+            ("/cmd_vel", 10, &cmd_vel_cb);
     ros::ServiceClient arming_client = nh.serviceClient<mavros_msgs::CommandBool>
             ("/mavros/cmd/arming");
     ros::ServiceClient set_mode_client = nh.serviceClient<mavros_msgs::SetMode>
@@ -73,7 +81,7 @@ int main(int argc, char **argv)
 
         double lin_vel_z = pid_linvel_z.computeCommand(
                     1.0 - local_pos.pose.position.z, ros::Time::now()-last_time);
-        sp_man->Set(0.0, 0.0, lin_vel_z);
+        sp_man->Set(cmd_vel.linear.x, cmd_vel.linear.y, lin_vel_z);
         //ROS_INFO("Sending velocity: %G", lin_vel_z);
 
         ros::spinOnce();
