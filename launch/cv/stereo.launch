@@ -1,0 +1,35 @@
+<launch>
+  <group ns="cam0">
+    <!-- left -->
+    <node pkg="camera1394" type="camera1394_node" name="camera1394" output="screen">
+      <param name="guid" value="00b09d010099d8be" />
+      <param name="video_mode" value="640x480_mono8" />
+      <param name="frame_rate" value="60" />
+      <param name="external_trigger" value="true" />
+      <param name="frame_id" value="cam0" />
+      <!-- color stuff -->
+      <param name="bayer_pattern" value="" />
+      <param name="bayer_method" value="" />
+    </node>
+    <node pkg="image_view" type="image_view" name="image_view">
+      <remap from="image" to="camera/image_raw" />
+    </node>
+  </group>
+  <group ns="cam1">
+    <!-- right -->
+    <node pkg="camera1394" type="camera1394_node" name="camera1394">
+      <param name="guid" value="00b09d01008f706f" />
+      <param name="video_mode" value="640x480_mono8" />
+      <param name="frame_rate" value="60" />
+      <param name="external_trigger" value="true" />
+      <param name="frame_id" value="cam1" />
+      <!-- color stuff -->
+      <param name="bayer_pattern" value="" />
+      <param name="bayer_method" value="" />
+    </node>
+    <node pkg="image_view" type="image_view" name="image_view">
+      <remap from="image" to="camera/image_raw" />
+    </node>
+  </group>
+  <node pkg="camera1394" type="camera1394_trigger_ready" name="camera1394_trigger_ready" />
+</launch>
