@@ -1,0 +1,82 @@
+<launch>
+  <arg name="show_img" value="true" />
+  <arg name="left_cam_name" value="cam0" />
+  <arg name="right_cam_name" value="cam1" />
+
+  <group ns="$(arg left_cam_name)">
+    <!-- left -->
+    <node pkg="camera1394" type="camera1394_node" name="camera1394"
+      output="screen">
+      <param name="guid" value="00b09d010099d8be" />
+      <param name="video_mode" value="640x480_mono8" />
+      <param name="frame_rate" value="30" />
+      <param name="external_trigger" value="true" />
+      <param name="frame_id" value="$(arg left_cam_name)" />
+      <param name="reset_on_open" value="true" />
+      
+      <!-- manual settings -->
+      <param name="auto_brightness" value="0" />  <!-- use fixe value -->
+      <param name="brightness" value="1" />
+      <param name="auto_exposure" value="0" />
+      <param name="exposure" value="62" />
+      <param name="auto_gamma" value="0" />
+      <param name="gamma" value="0" />
+      <param name="auto_shutter" value="0" />
+      <param name="shutter" value="300" />
+      <param name="auto_gain" value="0" />
+      <param name="gain" value="20" />
+    </node>
+    <group if="$(arg show_img)">
+      <node pkg="image_view" type="image_view" name="image_view">
+        <remap from="image" to="camera/image_raw" />
+      </node>
+    </group>
+  </group>
+  <group ns="$(arg right_cam_name)">
+    <!-- right -->
+    <node pkg="camera1394" type="camera1394_node" name="camera1394">
+      <param name="guid" value="00b09d01008f706f" />
+      <param name="video_mode" value="640x480_mono8" />
+      <param name="frame_rate" value="30" />
+      <param name="external_trigger" value="true" />
+      <param name="frame_id" value="$(arg right_cam_name)" />
+      <param name="reset_on_open" value="true" />
+
+      <!-- manual settings -->
+      <param name="auto_brightness" value="0" />  <!-- use fixe value -->
+      <param name="brightness" value="1" />
+      <param name="auto_exposure" value="0" />
+      <param name="exposure" value="62" />
+      <param name="auto_gamma" value="0" />
+      <param name="gamma" value="0" />
+      <param name="auto_shutter" value="0" />
+      <param name="shutter" value="300" />
+      <param name="auto_gain" value="0" />
+      <param name="gain" value="20" />
+    </node>
+    <group if="$(arg show_img)">
+      <node pkg="image_view" type="image_view" name="image_view">
+        <remap from="image" to="camera/image_raw" />
+      </node>
+    </group>
+  </group>
+  <node pkg="camera1394" type="camera1394_trigger_ready"
+    name="trig_rdy" output="screen" />
+
+    <arg name="fcu_url" default="/dev/ttyACM0:115200" />
+    <arg name="gcs_url" default="" />
+    <arg name="tgt_system" default="1" />
+    <arg name="tgt_component" default="1" />
+    <arg name="log_output" default="screen" />
+
+    <include file="$(find mavros)/launch/node.launch">
+      <arg name="pluginlists_yaml" value="$(find mavros)/launch/px4_pluginlists.yaml" />
+      <arg name="config_yaml" value="$(find mavros)/launch/px4_config.yaml" />
+
+      <arg name="fcu_url" value="$(arg fcu_url)" />
+      <arg name="gcs_url" value="$(arg gcs_url)" />
+      <arg name="tgt_system" value="$(arg tgt_system)" />
+      <arg name="tgt_component" value="$(arg tgt_component)" />
+      <arg name="log_output" value="$(arg log_output)" />
+    </include>
+</launch>
