@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/andre-nguyen/an_mav_tools.svg?branch=master)](https://travis-ci.org/andre-nguyen/an_mav_tools)
 # an_mav_tools
 This package contains a set of nodes which should serve as examples on how to integrate the px4 flight stack into larger systems (or how to build a system around the px4 flight stack).
 
