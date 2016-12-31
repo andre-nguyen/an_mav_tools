@@ -1,15 +1,10 @@
 #include <ros/ros.h>
-#include <rrtstar/rrts.hpp>
-#include <rrtstar/system_single_integrator.h>
-
-using namespace RRTstar;
-using namespace SingleIntegrator;
-
-typedef Planner<State,Trajectory,System> planner_t;
-typedef Vertex<State,Trajectory,System> vertex_t;
+#include <grid_map_ros/grid_map_ros.hpp>
+#include <grid_map_msgs/GridMap.h>
 
 int main(int argc, char** argv)
 {
-  planner_t rrts;
+  ros::init(argc, argv, "rrt_node");
+  
   return 0;
 }
